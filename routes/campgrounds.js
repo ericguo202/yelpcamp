@@ -3,6 +3,7 @@ const router = express.Router();
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
 const { campgroundSchema } = require("../joiSchemas");
+const { isLoggedIn } = require("../middleware");
 
 const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
@@ -21,7 +22,7 @@ router.get("/", async (req, res) => {
     res.render("campgrounds/index", { campgrounds });
 });
 
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
     res.render("campgrounds/new");
 });
 
