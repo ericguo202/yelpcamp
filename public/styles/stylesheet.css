@@ -10,3 +10,7 @@ main {
 #nav {
     background-color: #ccd5ae;
 }
+
+.shown {
+    display: block !important;
+}
