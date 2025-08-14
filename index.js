@@ -1,3 +1,7 @@
+// dotenv
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
 // relating to the app
 const express = require("express");
 const path = require("path");
