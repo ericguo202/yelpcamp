@@ -4,10 +4,12 @@
             <h4 class="alert-heading">
                 Error <%= err.status %>: <%= err.message %>
             </h4>
-            <p>
-                <%= err.stack %>
-            </p>
-            <hr>
-            <a href="/campgrounds" class="btn btn-secondary">Back</a>
+            <% if (process.env.NODE_ENV !=="production" ) { %>
+                <p>
+                    <%= err.stack %>
+                </p>
+                <% } %>
+                    <hr>
+                    <a href="/campgrounds" class="btn btn-secondary">Back</a>
         </div>
     </div>

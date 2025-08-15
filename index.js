@@ -17,6 +17,7 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const sanitizeV5 = require("./utils/mongoSanitizeV5");
 
 // schemas
 const User = require("./models/user");
@@ -32,6 +33,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp')
 
 const app = express();
 
+// related to sanitizeV5
+app.set("query parser", "extended");
+
 // view engine
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
@@ -41,12 +45,15 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(sanitizeV5({ replaceWith: "_" }));
+
 const sessionConfig = {
+    name: "sess",
     secret: "thisisnotarealsecret",
     resave: false,
     saveUninitialized: true,
     cookie: {
-        HttpOnly: true,
+        httpOnly: true, // only accessible through http, not javascript (for security reasons)
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -61,6 +68,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
+    console.log(req.query);
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currentUser = req.user;
